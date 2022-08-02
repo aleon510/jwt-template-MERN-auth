@@ -1,18 +1,20 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 5000;
+
+if (process.env.NODE.ENV === "production") {
+  app.use(express.static("client/build"));
+}
 
 // setup express
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.listen(PORT, () => console.log(`listening at: http://localhost:${PORT}`));
 
 // setup mongoose
 
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/jwt-auth",
-  (err) => {
-    if (err) throw err;
-    console.log("MongoDB connection established");
-  }
-);
+// setup routes
+
+const apiRoutes = require("./routes/api-routes");
+app.use(apiRoutes);
